@@ -1,0 +1,3 @@
+[submodule "lib/i2c_soft_lib"]
+	path = lib/i2c_soft_lib
+	url = https://github.com/Lumenjer/i2c_soft_lib.git
