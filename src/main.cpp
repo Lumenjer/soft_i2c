@@ -61,10 +61,10 @@ void setup() {
 
   LOG(println, "Start\n");
   if (i2c_soft_read(&bme_280, &data, 1)){
-    LOG(println, "Success\n");
+    LOG(printf, "Success %#0x\n", data);
   }
   else{
-    LOG(println, "Fail\n");
+    LOG(printf, "Fail %#0x\n", data);
   }
 
 }
@@ -73,10 +73,10 @@ void loop() {
   delay(1000);
   uint8_t data = BME280_ID_REG;
   if (i2c_soft_read(&bme_280, &data, 1)){
-    LOG(println, "Success\n");
+    LOG(printf, "Success %#0x\n", data);
   }
   else {
-    LOG(println, "Fail\n");
+    LOG(printf, "Fail %#0x\n", data);
   }
   // put your main code here, to run repeatedly:
 
