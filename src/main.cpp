@@ -11,6 +11,8 @@ i2c_soft_device bme_280 = {
   .speed    = I2C_SOFT_SPEED_USE_BUS
 };
 
+i2c_soft_device device_arr[DEVICE_MAX];
+
 void set_sda(bool release_line)
 {
   if (release_line)
@@ -141,6 +143,15 @@ void loop() {
               data != BME280_CHIP_ID ? " Wrong" : "");
   LOG(printf, "End - Start diff us %d\n", end - start);
   LOG(printf, "SDA = %d, SCL = %d\n", i2c_soft1.read_sda_ptr(), i2c_soft1.read_scl_ptr());
+
+  uint8_t founded = i2c_soft_device_lookup(&i2c_soft1, device_arr);
+  LOG(printf, "Device founded - %d\n", founded);
+  LOG(print, "Device addresses - ");
+  for(uint8_t idx = 0; idx < founded; idx++)
+  {
+    LOG(printf, "%#02x ", device_arr[idx].addr);
+  }
+  LOG(println, "");
 
   delay(1000);
 }
