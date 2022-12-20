@@ -5,9 +5,10 @@
 i2c_soft_bus i2c_soft1;
 
 i2c_soft_device bme_280 = {
-  .type = I2C_SOFT_BME,
-  .addr = BME280_ADDRESS,
-  .bus_ptr = &i2c_soft1
+  .type     = I2C_SOFT_BME,
+  .addr     = BME280_ADDRESS,
+  .bus_ptr  = &i2c_soft1,
+  .speed    = I2C_SOFT_SPEED_USE_BUS
 };
 
 void pull_sda(bool pull)
@@ -53,31 +54,28 @@ void setup() {
     .read_scl_ptr = &read_scl,
     .pull_sda_ptr = &pull_sda,
     .pull_scl_ptr = &pull_scl,
-    .delay_micros = &delayMicroseconds
+    .delay_micros = &delayMicroseconds,
+    .speed        = I2C_SOFT_SPEED_400K
   };
 
   i2c_soft_init(&i2c_soft1, &init_struct);
   uint8_t data = BME280_ID_REG;
 
   LOG(println, "Start\n");
-  if (i2c_soft_read(&bme_280, &data, 1)){
-    LOG(printf, "Success %#0x\n", data);
-  }
-  else{
-    LOG(printf, "Fail %#0x\n", data);
-  }
-
 }
 
 void loop() {
-  delay(1000);
+  // put your main code here, to run repeatedly:
   uint8_t data = BME280_ID_REG;
+  static uint8_t speed = I2C_SOFT_SPEED_10K;
+  bme_280.speed = (i2c_soft_speed)speed++;
+  speed %= I2C_SOFT_SPEED_USE_BUS;
   if (i2c_soft_read(&bme_280, &data, 1)){
     LOG(printf, "Success %#0x\n", data);
   }
   else {
     LOG(printf, "Fail %#0x\n", data);
   }
-  // put your main code here, to run repeatedly:
 
+  delay(1000);
 }
