@@ -87,8 +87,8 @@ void setup() {
   i2c_soft_init_struct init_struct = {
     .read_sda_ptr = &read_sda,
     .read_scl_ptr = &read_scl,
-    .set_sda_ptr = &set_sda,
-    .set_scl_ptr = &set_scl,
+    .set_sda_ptr  = &set_sda,
+    .set_scl_ptr  = &set_scl,
     .delay_micros = &delayMicroseconds,
     .speed        = I2C_SOFT_SPEED_400K
   };
@@ -145,7 +145,7 @@ void loop() {
   LOG(printf, "End - Start diff us %d\n", end - start);
   LOG(printf, "SDA = %d, SCL = %d\n", i2c_soft1.read_sda_ptr(), i2c_soft1.read_scl_ptr());
 
-  uint8_t founded = i2c_soft_device_lookup(&i2c_soft1, device_arr);
+  uint8_t founded = i2c_soft_device_lookup(&i2c_soft1, device_arr, DEVICE_MAX);
   LOG(printf, "Device founded - %d\n", founded);
   LOG(print, "Device addresses - ");
   for(uint8_t idx = 0; idx < founded; idx++)
