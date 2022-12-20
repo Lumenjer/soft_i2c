@@ -17,10 +17,9 @@ void set_sda(bool release_line)
 {
   if (release_line)
   {
-    pinMode(I2C_SDA_PIN, INPUT);
+    digitalWrite(I2C_SDA_PIN, HIGH);
   }
   else {
-    pinMode(I2C_SDA_PIN, OUTPUT);
     digitalWrite(I2C_SDA_PIN, LOW);
   }
 }
@@ -29,10 +28,9 @@ void set_scl(bool release_line)
 {
   if (release_line)
   {
-    pinMode(I2C_SCL_PIN, INPUT);
+    digitalWrite(I2C_SCL_PIN, HIGH);
   }
   else {
-    pinMode(I2C_SCL_PIN, OUTPUT);
     digitalWrite(I2C_SCL_PIN, LOW);
   }
 }
@@ -83,6 +81,9 @@ const char* get_speed_str(i2c_soft_speed speed)
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(MONITOR_SPEED);
+  pinMode(I2C_SCL_PIN, OUTPUT_OPEN_DRAIN);
+  pinMode(I2C_SDA_PIN, OUTPUT_OPEN_DRAIN);
+
   i2c_soft_init_struct init_struct = {
     .read_sda_ptr = &read_sda,
     .read_scl_ptr = &read_scl,
