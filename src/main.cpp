@@ -109,7 +109,7 @@ void loop() {
 
   uint32_t end = micros();
   LOG(printf, "Result write = %s %#02x\n", result ? "Success" : "Fail", data);
-  LOG(printf, "Start - End diff %d\n", end - start);
+  LOG(printf, "End - Start diff us %d\n", end - start);
   LOG(printf, "SDA = %d, SCL = %d\n", i2c_soft1.read_sda_ptr(), i2c_soft1.read_scl_ptr());
 
   if (result)
@@ -124,7 +124,7 @@ void loop() {
                 data,
                 BME280_CHIP_ID,
                 data != BME280_CHIP_ID ? " Wrong" : "");
-    LOG(printf, "Start - End diff %d\n", end - start);
+    LOG(printf, "End - Start diff us %d\n", end - start);
     LOG(printf, "SDA = %d, SCL = %d\n", i2c_soft1.read_sda_ptr(), i2c_soft1.read_scl_ptr());
   }
 
@@ -139,7 +139,7 @@ void loop() {
               data,
               BME280_CHIP_ID,
               data != BME280_CHIP_ID ? " Wrong" : "");
-  LOG(printf, "Start - End diff %d\n", end - start);
+  LOG(printf, "End - Start diff us %d\n", end - start);
   LOG(printf, "SDA = %d, SCL = %d\n", i2c_soft1.read_sda_ptr(), i2c_soft1.read_scl_ptr());
 
   delay(1000);
