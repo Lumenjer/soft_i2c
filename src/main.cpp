@@ -11,27 +11,27 @@ i2c_soft_device bme_280 = {
   .speed    = I2C_SOFT_SPEED_USE_BUS
 };
 
-void pull_sda(bool pull)
+void set_sda(bool release_line)
 {
-  if (pull)
+  if (release_line)
   {
+    pinMode(I2C_SDA_PIN, INPUT);
+  }
+  else {
     pinMode(I2C_SDA_PIN, OUTPUT);
     digitalWrite(I2C_SDA_PIN, LOW);
   }
-  else {
-    pinMode(I2C_SDA_PIN, INPUT);
-  }
 }
 
-void pull_scl(bool pull)
+void set_scl(bool release_line)
 {
-  if (pull)
+  if (release_line)
   {
-    pinMode(I2C_SCL_PIN, OUTPUT);
-    digitalWrite(I2C_SCL_PIN, LOW);
+    pinMode(I2C_SCL_PIN, INPUT);
   }
   else {
-    pinMode(I2C_SCL_PIN, INPUT);
+    pinMode(I2C_SCL_PIN, OUTPUT);
+    digitalWrite(I2C_SCL_PIN, LOW);
   }
 }
 
@@ -52,8 +52,8 @@ void setup() {
   i2c_soft_init_struct init_struct = {
     .read_sda_ptr = &read_sda,
     .read_scl_ptr = &read_scl,
-    .pull_sda_ptr = &pull_sda,
-    .pull_scl_ptr = &pull_scl,
+    .set_sda_ptr = &set_sda,
+    .set_scl_ptr = &set_scl,
     .delay_micros = &delayMicroseconds,
     .speed        = I2C_SOFT_SPEED_400K
   };
