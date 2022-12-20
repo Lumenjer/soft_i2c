@@ -44,7 +44,39 @@ bool read_scl(void)
   return digitalRead(I2C_SCL_PIN);
 }
 
+const char* get_speed_str(i2c_soft_speed speed)
+{
+  ASSERT(speed < I2C_SOFT_SPEED_TOTAL)
 
+  switch (speed)
+  {
+  case I2C_SOFT_SPEED_10K:
+    return "I2C SPEED 10K";
+    break;
+
+  case I2C_SOFT_SPEED_100K:
+    return "I2C SPEED 100K";
+    break;
+
+  case I2C_SOFT_SPEED_200K:
+    return "I2C SPEED 200K";
+    break;
+
+  case I2C_SOFT_SPEED_400K:
+    return "I2C SPEED 400K";
+    break;
+
+  case I2C_SOFT_SPEED_USE_BUS:
+    return "I2C SPEED USE BUS";
+    break;
+
+  default:
+    return "I2C SPEED DEFAULT";
+    break;
+  }
+
+  return "";
+}
 
 void setup() {
   // put your setup code here, to run once:
@@ -70,12 +102,45 @@ void loop() {
   static uint8_t speed = I2C_SOFT_SPEED_10K;
   bme_280.speed = (i2c_soft_speed)speed++;
   speed %= I2C_SOFT_SPEED_USE_BUS;
-  if (i2c_soft_read(&bme_280, &data, 1)){
-    LOG(printf, "Success %#0x\n", data);
+
+  LOG(printf, "Set speed %s\n", get_speed_str(bme_280.speed));
+  uint32_t start = micros();
+  bool result = i2c_soft_write(&bme_280, &data, 1);
+
+  uint32_t end = micros();
+  LOG(printf, "Result write = %s %#02x\n", result ? "Success" : "Fail", data);
+  LOG(printf, "Start - End diff %d\n", end - start);
+  LOG(printf, "SDA = %d, SCL = %d\n", i2c_soft1.read_sda_ptr(), i2c_soft1.read_scl_ptr());
+
+  if (result)
+  {
+    start = micros();
+    result = i2c_soft_read(&bme_280, &data, 1);
+    end = micros();
+
+    LOG(printf, "Result read = %s\n", result ? "Success" : "Fail");
+    LOG(printf, "Data     - %#02x\n"
+                "Expected - %#02x\n%s",
+                data,
+                BME280_CHIP_ID,
+                data != BME280_CHIP_ID ? " Wrong" : "");
+    LOG(printf, "Start - End diff %d\n", end - start);
+    LOG(printf, "SDA = %d, SCL = %d\n", i2c_soft1.read_sda_ptr(), i2c_soft1.read_scl_ptr());
   }
-  else {
-    LOG(printf, "Fail %#0x\n", data);
-  }
+
+  data = BME280_ID_REG;
+  start = micros();
+  result = i2c_soft_write_read(&bme_280, &data, 1, 1);
+  end = micros();
+
+  LOG(printf, "Result write read = %s\n", result ? "Success" : "Fail");
+  LOG(printf, "Data     - %#02x\n"
+              "Expected - %#02x\n%s",
+              data,
+              BME280_CHIP_ID,
+              data != BME280_CHIP_ID ? " Wrong" : "");
+  LOG(printf, "Start - End diff %d\n", end - start);
+  LOG(printf, "SDA = %d, SCL = %d\n", i2c_soft1.read_sda_ptr(), i2c_soft1.read_scl_ptr());
 
   delay(1000);
 }
